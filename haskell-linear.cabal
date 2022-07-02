@@ -1,0 +1,57 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.34.6.
+--
+-- see: https://github.com/sol/hpack
+
+name:           haskell-linear
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/epgui/haskell-linear>
+homepage:       https://github.com/epgui/haskell-linear#readme
+bug-reports:    https://github.com/epgui/haskell-linear/issues
+author:         Guillaume Pelletier
+maintainer:     guigui.p@gmail.com
+license:        PublicDomain
+build-type:     Simple
+extra-source-files:
+    README.md
+
+source-repository head
+  type: git
+  location: https://github.com/epgui/haskell-linear
+
+library
+  exposed-modules:
+      Lib
+  other-modules:
+      Paths_haskell_linear
+  hs-source-dirs:
+      src
+  build-depends:
+      base >=4.7 && <5
+  default-language: Haskell2010
+
+executable haskell-linear-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_haskell_linear
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , haskell-linear
+  default-language: Haskell2010
+
+test-suite haskell-linear-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_haskell_linear
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , haskell-linear
+  default-language: Haskell2010
