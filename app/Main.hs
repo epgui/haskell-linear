@@ -1,6 +1,23 @@
 module Main where
 
+import Control.Monad (unless)
 import Lib
+import System.IO
+
+read_ :: IO String
+read_ = putStr "REPL> "
+     >> hFlush stdout
+     >> getLine
+
+eval_ :: String -> String
+eval_ input = input
+
+print_ :: String -> IO ()
+print_ = putStrLn
 
 main :: IO ()
-main = someFunc
+main = do
+  input <- read_
+  unless (input == ":quit")
+       $ print_ (eval_ input)
+      >> main
