@@ -1,7 +1,7 @@
 module Repl where
 
-import Control.Monad (unless)
-import System.IO
+import           Control.Monad (unless)
+import           System.IO
 
 read_ :: IO String
 read_ = putStr "REPL> "
@@ -17,6 +17,6 @@ print_ = putStrLn
 repl :: IO ()
 repl = do
     input <- read_
-    unless (input == ":quit")
-        $ print_ (eval_ input)
-        >> repl
+    unless (input == ":quit") $
+        print_ (eval_ input)
+            >> repl
