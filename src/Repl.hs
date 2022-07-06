@@ -1,15 +1,16 @@
 module Repl where
 
 import           Control.Monad (unless)
+import           Parser
 import           System.IO
 
 read_ :: IO String
-read_ = putStr "REPL> "
+read_ = putStr "haskell-linear> "
     >> hFlush stdout
     >> getLine
 
 eval_ :: String -> String
-eval_ input = input
+eval_ = readExpr
 
 print_ :: String -> IO ()
 print_ = putStrLn
