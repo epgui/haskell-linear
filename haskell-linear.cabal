@@ -21,6 +21,8 @@ source-repository head
 
 library
   exposed-modules:
+      Evaluator
+      LispVal
       Parser
       Repl
   other-modules:

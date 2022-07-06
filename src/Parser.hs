@@ -1,17 +1,10 @@
 module Parser where
 
 import           Control.Monad
+import           Evaluator
+import           LispVal
 import           System.Environment
 import           Text.ParserCombinators.Parsec hiding (spaces)
-
--- TODO: add support for floats / decimals (see readFloat)
--- TODO: add support for vectors (Array?)
-data LispVal = Atom String
-             | List [LispVal]
-             | DottedList [LispVal] LispVal
-             | Number Integer
-             | String String
-             | Bool Bool
 
 spaces :: Parser ()
 spaces = skipMany1 space
@@ -33,9 +26,9 @@ parseAtom = do
     rest  <- many (letter <|> digit <|> symbol)
     let atom = first:rest
     return $ case atom of
-        "#t" -> Bool True
-        "#f" -> Bool False
-        _    -> Atom atom
+        "true"  -> Bool True
+        "false" -> Bool False
+        _       -> Atom atom
 
 parseNumber :: Parser LispVal
 parseNumber = Number . read <$> many1 digit
@@ -68,7 +61,7 @@ parseExpr = parseAtom
         char ')'
         return x
 
-readExpr :: String -> String
+readExpr :: String -> LispVal
 readExpr input = case parse parseExpr "lisp" input of
-    Left  err -> "No match: " ++ show err
-    Right _   -> "Found value"
+    Left  err -> String $ "Parse error: " ++ show err
+    Right val -> val
