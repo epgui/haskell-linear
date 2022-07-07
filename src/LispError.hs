@@ -18,18 +18,18 @@ data LispError = NumArgs Integer [LispVal]
                | Unbound String String
                | Default String
 
-instance Show LispError where show = err
+instance Show LispError where show = showErr
 
-asArray :: [LispVal] -> String
-asArray args = "[" ++ unwordsList args ++ "]"
+formatArray :: [LispVal] -> String
+formatArray args = "[" ++ unwordsList args ++ "]"
 
-err :: LispError -> String
-err (Unbound msg x)  = [fmt|{msg}: {x}|]
-err (BadForm msg x)  = [fmt|{msg}: {show x}|]
-err (NotFunc msg f)  = [fmt|{msg}: {show f}|]
-err (ParseErr e)     = [fmt|Parse error at {show e}|]
-err (TypeErr exp t)  = [fmt|Invalid type: expected {exp}, found {show t}|]
-err (NumArgs n args) = [fmt|Expected {n} args; found {asArray args}|]
+showErr :: LispError -> String
+showErr (Unbound msg x)  = [fmt|{msg}: {x}|]
+showErr (BadForm msg x)  = [fmt|{msg}: {show x}|]
+showErr (NotFunc msg f)  = [fmt|{msg}: {show f}|]
+showErr (ParseErr e)     = [fmt|Parse error at {show e}|]
+showErr (TypeErr exp t)  = [fmt|Invalid type: expected {exp}, found {show t}|]
+showErr (NumArgs n args) = [fmt|Expected {n} args; found {formatArray args}|]
 
 type ThrowsError = Either LispError
 
