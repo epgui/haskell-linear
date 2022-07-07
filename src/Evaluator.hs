@@ -78,10 +78,18 @@ apply f args =
           ($ args)
           (lookup f primitives)
 
+evalIf :: LispVal -> LispVal -> LispVal -> ThrowsError LispVal
+evalIf pred a b = do
+    result <- eval pred
+    case result of
+        Bool False -> eval b
+        _          -> eval a
+
 eval :: LispVal -> ThrowsError LispVal
-eval val@(String _)             = return val
-eval val@(Number _)             = return val
-eval val@(Bool _)               = return val
-eval (List [Atom "quote", val]) = return val
-eval (List (Atom f : args))     = mapM eval args >>= apply f
+eval val@(String _)                 = return val
+eval val@(Number _)                 = return val
+eval val@(Bool _)                   = return val
+eval (List [Atom "quote", val])     = return val
+eval (List [Atom "if", pred, a, b]) = evalIf pred a b
+eval (List (Atom fn : args))        = mapM eval args >>= apply fn
 eval badForm = throwError $ BadSpecialForm "Unrecognized special form" badForm
