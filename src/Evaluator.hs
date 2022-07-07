@@ -7,26 +7,26 @@ import           LispVal              (LispVal (..))
 
 unpackBool :: LispVal -> ThrowsError Bool
 unpackBool (Bool b) = return b
-unpackBool notBool  = throwError $ TypeMismatch "boolean" notBool
+unpackBool notBool  = throwError $ TypeErr "boolean" notBool
 
 unpackStr :: LispVal -> ThrowsError String
 unpackStr (String s) = return s
 unpackStr (Number s) = return $ show s
 unpackStr (Bool s)   = return $ show s
-unpackStr notString  = throwError $ TypeMismatch "string" notString
+unpackStr notString  = throwError $ TypeErr "string" notString
 
 unpackStrNum :: String -> ThrowsError Integer
 unpackStrNum n =
     let parsed = reads n in
         if null parsed
-            then throwError $ TypeMismatch "number" $ String n
+            then throwError $ TypeErr "number" $ String n
             else return $ fst $ head parsed
 
 unpackNum :: LispVal -> ThrowsError Integer
 unpackNum (Number n) = return n
 unpackNum (String n) = unpackStrNum n
 unpackNum (List [n]) = unpackNum n
-unpackNum notNum     = throwError $ TypeMismatch "number" notNum
+unpackNum notNum     = throwError $ TypeErr "number" notNum
 
 numericBinop :: (Integer -> Integer -> Integer) -> [LispVal] -> ThrowsError LispVal
 numericBinop op []            = throwError $ NumArgs 2 []
@@ -74,7 +74,7 @@ primitives = [("+",         numericBinop (+)),
 
 apply :: String -> [LispVal] -> ThrowsError LispVal
 apply f args =
-    maybe (throwError $ NotFunction "Unrecognized primitive function args" f)
+    maybe (throwError $ NotFunc "Unrecognized primitive function args" f)
           ($ args)
           (lookup f primitives)
 
@@ -92,4 +92,4 @@ eval val@(Bool _)                   = return val
 eval (List [Atom "quote", val])     = return val
 eval (List [Atom "if", pred, a, b]) = evalIf pred a b
 eval (List (Atom fn : args))        = mapM eval args >>= apply fn
-eval bad = throwError $ BadSpecialForm "Unrecognized special form" bad
+eval badForm = throwError $ BadForm "Unrecognized special form" badForm

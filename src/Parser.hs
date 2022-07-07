@@ -67,5 +67,5 @@ parseExpr = parseAtom
 
 readExpr :: String -> ThrowsError LispVal
 readExpr input = case PS.parse parseExpr "lisp" input of
-    Left  err -> throwError $ LispError.Parser err
+    Left  err -> throwError $ LispError.ParseErr err
     Right val -> return val

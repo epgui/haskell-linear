@@ -29,8 +29,11 @@ library
       Paths_haskell_linear
   hs-source-dirs:
       src
+  default-extensions:
+      QuasiQuotes
   build-depends:
-      base >=4.15 && <5
+      PyF >=0.10 && <1
+    , base >=4.15 && <5
     , mtl >=2.2 && <3
     , parsec >=3.1 && <4
   default-language: Haskell2010
@@ -41,9 +44,12 @@ executable haskell-linear-exe
       Paths_haskell_linear
   hs-source-dirs:
       app
+  default-extensions:
+      QuasiQuotes
   ghc-options: -threaded -rtsopts -with-rtsopts=-N -fllvm
   build-depends:
-      base >=4.15 && <5
+      PyF >=0.10 && <1
+    , base >=4.15 && <5
     , haskell-linear
     , mtl >=2.2 && <3
     , parsec >=3.1 && <4
@@ -56,9 +62,12 @@ test-suite haskell-linear-test
       Paths_haskell_linear
   hs-source-dirs:
       test
+  default-extensions:
+      QuasiQuotes
   ghc-options: -threaded -rtsopts -with-rtsopts=-N -fllvm
   build-depends:
-      base >=4.15 && <5
+      PyF >=0.10 && <1
+    , base >=4.15 && <5
     , haskell-linear
     , mtl >=2.2 && <3
     , parsec >=3.1 && <4
