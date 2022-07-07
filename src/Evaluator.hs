@@ -2,14 +2,17 @@ module Evaluator where
 
 import           LispVal
 
+unpackStringNum :: String -> Integer
+unpackStringNum sn = let parsed = reads sn :: [(Integer, String)] in
+    if null parsed
+        then 0
+        else fst $ head parsed
+
 unpackNum :: LispVal -> Integer
 unpackNum (Number n) = n
-unpackNum (String n) = let parsed = reads n :: [(Integer, String)] in
-                           if null parsed
-                              then 0
-                              else fst $ head parsed
+unpackNum (String n) = unpackStringNum n
 unpackNum (List [n]) = unpackNum n
-unpackNum _ = 0
+unpackNum _          = 0
 
 numericBinop :: (Integer -> Integer -> Integer) -> [LispVal] -> LispVal
 numericBinop op params = Number $ foldl1 op $ map unpackNum params

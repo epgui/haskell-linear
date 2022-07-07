@@ -24,7 +24,6 @@ library
       Evaluator
       LispVal
       Parser
-      Repl
   other-modules:
       Paths_haskell_linear
   hs-source-dirs:

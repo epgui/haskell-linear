@@ -43,6 +43,13 @@ parseDottedList = do
     tail <- char '.' >> spaces >> parseExpr
     return $ DottedList head tail
 
+parseOuterList :: Parser LispVal
+parseOuterList = do
+    char '('
+    x <- try parseList <|> parseDottedList
+    char ')'
+    return x
+
 -- TODO: add support for backquote (quasiquote/unquote)
 parseQuoted :: Parser LispVal
 parseQuoted = do
@@ -55,11 +62,7 @@ parseExpr = parseAtom
     <|> parseString
     <|> parseNumber
     <|> parseQuoted
-    <|> do
-        char '('
-        x <- try parseList <|> parseDottedList
-        char ')'
-        return x
+    <|> parseOuterList
 
 readExpr :: String -> LispVal
 readExpr input = case parse parseExpr "lisp" input of
