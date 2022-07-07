@@ -1,65 +1,64 @@
-module Parser where
+module Parser (readExpr) where
 
-import           Control.Monad
-import           Control.Monad.Except
-import           Evaluator
-import           LispError
-import           LispVal
-import           System.Environment
-import           Text.ParserCombinators.Parsec hiding (spaces)
+import           Control.Monad.Except          (throwError)
+import           Evaluator                     (eval)
+import           LispError                     (LispError (..), ThrowsError)
+import           LispVal                       (LispVal (..))
+import qualified Text.ParserCombinators.Parsec as PS
+import           Text.ParserCombinators.Parsec ((<|>))
 
-spaces :: Parser ()
-spaces = skipMany1 space
+spaces :: PS.Parser ()
+spaces = PS.skipMany1 PS.space
 
-symbol :: Parser Char
-symbol = oneOf "!#$%&|*+-/:<=>?@^_~"
+symbol :: PS.Parser Char
+symbol = PS.oneOf "!#$%&|*+-/:<=>?@^_~"
 
 -- TODO: add support for escaped characters (\", \n, \r, \t, \\)
-parseString :: Parser LispVal
+parseString :: PS.Parser LispVal
 parseString = do
-    char '"'
-    x <- many (noneOf "\"")
-    char '"'
+    PS.char '"'
+    x <- PS.many (PS.noneOf "\"")
+    PS.char '"'
     return $ String x
 
-parseAtom :: Parser LispVal
+parseAtom :: PS.Parser LispVal
 parseAtom = do
-    first <- letter <|> symbol
-    rest  <- many (letter <|> digit <|> symbol)
+    first <- PS.letter <|> symbol
+    rest  <- PS.many (PS.letter <|> PS.digit <|> symbol)
     let atom = first:rest
     return $ case atom of
         "true"  -> Bool True
         "false" -> Bool False
         _       -> Atom atom
 
-parseNumber :: Parser LispVal
-parseNumber = Number . read <$> many1 digit
+parseNumber :: PS.Parser LispVal
+parseNumber = Number . read <$> PS.many1 PS.digit
 
-parseList :: Parser LispVal
-parseList = List <$> sepBy parseExpr spaces
+parseList :: PS.Parser LispVal
+parseList = List <$> PS.sepBy parseExpr spaces
 
 -- I'm not sure what this is, but it's a LISP/Scheme thing. Do I really need it?
-parseDottedList :: Parser LispVal
+parseDottedList :: PS.Parser LispVal
 parseDottedList = do
-    head <- endBy parseExpr spaces
-    tail <- char '.' >> spaces >> parseExpr
+    head <- PS.endBy parseExpr spaces
+    tail <- PS.char '.' >> spaces >> parseExpr
     return $ DottedList head tail
 
-parseOuterList :: Parser LispVal
+parseOuterList :: PS.Parser LispVal
 parseOuterList = do
-    char '('
-    x <- try parseList <|> parseDottedList
-    char ')'
+    PS.char '('
+    x <- PS.try parseList <|> parseDottedList
+    PS.char ')'
     return x
 
 -- TODO: add support for backquote (quasiquote/unquote)
-parseQuoted :: Parser LispVal
+parseQuoted :: PS.Parser LispVal
 parseQuoted = do
-    char '\''
+    PS.char '\''
     x <- parseExpr
     return $ List [Atom "quote", x]
 
-parseExpr :: Parser LispVal
+parseExpr :: PS.Parser LispVal
 parseExpr = parseAtom
     <|> parseString
     <|> parseNumber
@@ -67,6 +66,6 @@ parseExpr = parseAtom
     <|> parseOuterList
 
 readExpr :: String -> ThrowsError LispVal
-readExpr input = case parse parseExpr "lisp" input of
-    Left  err -> throwError $ Parser err
+readExpr input = case PS.parse parseExpr "lisp" input of
+    Left  err -> throwError $ LispError.Parser err
     Right val -> return val

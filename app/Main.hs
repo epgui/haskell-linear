@@ -1,11 +1,10 @@
 module Main where
 
 import           Control.Monad (unless)
-import           Evaluator
-import           LispError
-import           LispVal
-import           Parser
-import           System.IO
+import           Evaluator     (eval)
+import           LispError     (extractValue, trapError)
+import           Parser        (readExpr)
+import           System.IO     (hFlush, stdout)
 
 promptForInput :: IO ()
 promptForInput = putStr "haskell-linear> " >> hFlush stdout

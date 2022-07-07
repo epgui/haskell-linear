@@ -1,4 +1,7 @@
-module LispVal where
+module LispVal (
+    LispVal(..),
+    unwordsList
+) where
 
 -- TODO: add support for floats / decimals (see readFloat)
 -- TODO: add support for vectors (Array?)

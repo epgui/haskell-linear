@@ -1,9 +1,9 @@
-module Evaluator where
+module Evaluator (eval) where
 
-import           Control.Monad.Except
-import           Data.Functor
-import           LispError
-import           LispVal
+import           Control.Monad.Except (throwError)
+import           Data.Functor         ((<&>))
+import           LispError            (LispError (..), ThrowsError)
+import           LispVal              (LispVal (..))
 
 unpackBool :: LispVal -> ThrowsError Bool
 unpackBool (Bool b) = return b
@@ -92,4 +92,4 @@ eval val@(Bool _)                   = return val
 eval (List [Atom "quote", val])     = return val
 eval (List [Atom "if", pred, a, b]) = evalIf pred a b
 eval (List (Atom fn : args))        = mapM eval args >>= apply fn
-eval badForm = throwError $ BadSpecialForm "Unrecognized special form" badForm
+eval bad = throwError $ BadSpecialForm "Unrecognized special form" bad

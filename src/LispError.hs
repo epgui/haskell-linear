@@ -1,8 +1,13 @@
-module LispError where
+module LispError (
+    LispError(..),
+    ThrowsError,
+    extractValue,
+    trapError
+) where
 
-import           Control.Monad.Except
-import           LispVal
-import           Text.ParserCombinators.Parsec hiding (spaces)
+import           Control.Monad.Except                (catchError)
+import           LispVal                             (LispVal, unwordsList)
+import           Text.ParserCombinators.Parsec.Error (ParseError)
 
 data LispError = NumArgs Integer [LispVal]
                | TypeMismatch String LispVal
