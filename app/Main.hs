@@ -2,6 +2,7 @@ module Main where
 
 import           Control.Monad (unless)
 import           Evaluator
+import           LispError
 import           LispVal
 import           Parser
 import           System.IO
@@ -13,7 +14,9 @@ printOutput :: String -> IO ()
 printOutput = putStrLn
 
 readEvalPrint :: String -> String
-readEvalPrint = show . eval . readExpr
+readEvalPrint input = do
+    let evaled = fmap show $ readExpr input >>= eval
+    extractValue $ trapError evaled
 
 readEvalPrintLoop :: IO ()
 readEvalPrintLoop = do

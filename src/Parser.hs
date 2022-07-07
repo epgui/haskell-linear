@@ -1,7 +1,9 @@
 module Parser where
 
 import           Control.Monad
+import           Control.Monad.Except
 import           Evaluator
+import           LispError
 import           LispVal
 import           System.Environment
 import           Text.ParserCombinators.Parsec hiding (spaces)
@@ -64,7 +66,7 @@ parseExpr = parseAtom
     <|> parseQuoted
     <|> parseOuterList
 
-readExpr :: String -> LispVal
+readExpr :: String -> ThrowsError LispVal
 readExpr input = case parse parseExpr "lisp" input of
-    Left  err -> String $ "Parse error: " ++ show err
-    Right val -> val
+    Left  err -> throwError $ Parser err
+    Right val -> return val
