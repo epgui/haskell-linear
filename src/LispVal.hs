@@ -7,7 +7,7 @@ module LispVal (
 -- TODO: add support for vectors (Array?)
 data LispVal = Atom String
              | List [LispVal]
-             | DottedList [LispVal] LispVal
+             | DotList [LispVal] LispVal
              | Number Integer
              | String String
              | Bool Bool
@@ -18,10 +18,10 @@ unwordsList :: [LispVal] -> String
 unwordsList = unwords . map showVal
 
 showVal :: LispVal -> String
-showVal (String a)       = "\"" ++ a ++ "\""
-showVal (Atom a)         = a
-showVal (Number a)       = show a
-showVal (Bool True)      = "true"
-showVal (Bool False)     = "false"
-showVal (List a)         = "(" ++ unwordsList a ++ ")"
-showVal (DottedList a b) = "(" ++ unwordsList a ++ " . " ++ showVal b ++ ")"
+showVal (String a)    = "\"" ++ a ++ "\""
+showVal (Atom a)      = a
+showVal (Number a)    = show a
+showVal (Bool True)   = "true"
+showVal (Bool False)  = "false"
+showVal (List a)      = "(" ++ unwordsList a ++ ")"
+showVal (DotList a b) = "(" ++ unwordsList a ++ " . " ++ showVal b ++ ")"

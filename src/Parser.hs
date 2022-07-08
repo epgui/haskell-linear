@@ -38,16 +38,16 @@ parseList :: PS.Parser LispVal
 parseList = List <$> PS.sepBy parseExpr spaces
 
 -- I'm not sure what this is, but it's a LISP/Scheme thing. Do I really need it?
-parseDottedList :: PS.Parser LispVal
-parseDottedList = do
+parseDotList :: PS.Parser LispVal
+parseDotList = do
     head <- PS.endBy parseExpr spaces
     tail <- PS.char '.' >> spaces >> parseExpr
-    return $ DottedList head tail
+    return $ DotList head tail
 
 parseOuterList :: PS.Parser LispVal
 parseOuterList = do
     PS.char '('
-    x <- PS.try parseList <|> parseDottedList
+    x <- PS.try parseList <|> parseDotList
     PS.char ')'
     return x
 

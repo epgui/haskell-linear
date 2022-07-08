@@ -33,7 +33,6 @@ showErr (NumArgs n args) = [fmt|Expected {n} args; found {formatArray args}|]
 
 type ThrowsError = Either LispError
 
--- What would be the type of this function?
 trapError :: ThrowsError String -> ThrowsError String
 trapError action = catchError action (return . show)
 

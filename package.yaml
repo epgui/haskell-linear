@@ -17,7 +17,9 @@ dependencies:
 library:
   source-dirs: src
 
-default-extensions: QuasiQuotes
+default-extensions:
+- ExistentialQuantification
+- QuasiQuotes
 
 executables:
   haskell-linear-exe:
