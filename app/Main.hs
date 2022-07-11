@@ -21,8 +21,9 @@ readEvalPrintLoop :: IO ()
 readEvalPrintLoop = do
     promptForInput
     input <- getLine
-    unless (input == ":quit") $
-        fmap printOutput readEvalPrint input >> readEvalPrintLoop
+    unless (input == ":quit") $ do
+        printOutput (readEvalPrint input)
+        readEvalPrintLoop
 
 main :: IO ()
 main = readEvalPrintLoop
