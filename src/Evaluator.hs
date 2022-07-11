@@ -96,7 +96,7 @@ unpackEquals a b (AnyUnpacker unpacker) =
     do unpackedA <- unpacker a
        unpackedB <- unpacker b
        return $ unpackedA == unpackedB
-      `catchError` const (return False)
+    `catchError` const (return False)
 
 equal :: [LispVal] -> ThrowsError LispVal
 equal [a, b] = do
