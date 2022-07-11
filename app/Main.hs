@@ -6,23 +6,18 @@ import           LispError     (extractValue, trapError)
 import           Parser        (readExpr)
 import           System.IO     (hFlush, stdout)
 
-promptForInput :: IO ()
-promptForInput = putStr "haskell-linear> " >> hFlush stdout
-
-printOutput :: String -> IO ()
-printOutput = putStrLn
-
-readEvalPrint :: String -> String
-readEvalPrint input = do
+readEval :: String -> String
+readEval input = do
     let evaled = fmap show $ readExpr input >>= eval
     extractValue $ trapError evaled
 
 readEvalPrintLoop :: IO ()
 readEvalPrintLoop = do
-    promptForInput
+    putStr "haskell-linear> "
+    hFlush stdout
     input <- getLine
     unless (input == ":quit") $ do
-        printOutput (readEvalPrint input)
+        putStrLn (readEval input)
         readEvalPrintLoop
 
 main :: IO ()
